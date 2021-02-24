@@ -30,31 +30,45 @@ class DogFlareControls extends FlareController {
         ..animation = animation;
       isActive.value = true;
     }
+
+    // Advance animation and call onComplete when a non-looping anim has finished.
+    @override
+    bool advance(FlutterActorArtboard artboard, double elapsed) {
+      if (_animationLayer == null) {
+        return false;
+      }
+      FlareAnimationLayer layer = _animationLayer;
+      layer.time += elapsed;
+      //Loop?
+      if (layer.animation.isLooping) {
+        layer.time %= layer.animation.duration;
+      }
+      //Advance animation, with full mix
+      layer.animation.apply(layer.time, _artBoard, 1);
+      //Remove anim if it's complete
+      if (layer.time > layer.animation.duration) {
+        //Stop animation from playing
+        _animationLayer = null;
+        if (onCompleted != null) {
+          onCompleted(layer.animation.name);
+        }
+      }
+      return _animationLayer != null;
+    }
+
+    @override
+    void setViewTransform(Mat2D viewTransform) {}
   }
 
-  // Advance animation and call onComplete when a non-looping anim has finished.
   @override
   bool advance(FlutterActorArtboard artboard, double elapsed) {
-    if(_animationLayer == null){ return false; }
-    FlareAnimationLayer layer = _animationLayer;
-    layer.time += elapsed;
-    //Loop?
-    if (layer.animation.isLooping) {
-      layer.time %= layer.animation.duration;
-    }
-    //Advance animation, with full mix
-    layer.animation.apply(layer.time, _artBoard, 1);
-    //Remove anim if it's complete
-    if (layer.time > layer.animation.duration) {
-      //Stop animation from playing
-      _animationLayer = null;
-      if (onCompleted != null) {
-        onCompleted(layer.animation.name);
-      }
-    }
-    return _animationLayer != null;
+    // TODO: implement advance
+    throw UnimplementedError();
   }
 
   @override
-  void setViewTransform(Mat2D viewTransform) {}
+  void setViewTransform(Mat2D viewTransform) {
+    // TODO: implement setViewTransform
+    throw UnimplementedError();
+  }
 }

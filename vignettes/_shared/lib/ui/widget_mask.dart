@@ -4,7 +4,6 @@ import 'package:flutter/rendering.dart';
 
 import 'dart:ui';
 
-
 /// Acts exactly like a `Stack` however the first child acts like an alpha mask when rendering the rest of the children
 class RenderWidgetMask extends RenderStack {
   RenderWidgetMask(
@@ -17,8 +16,7 @@ class RenderWidgetMask extends RenderStack {
             children: children,
             alignment: alignment,
             textDirection: textDirection,
-            fit: fit,
-            overflow: overflow);
+            fit: fit);
 
   @override
   void paintStack(context, offset) {
@@ -42,7 +40,8 @@ class RenderWidgetMask extends RenderStack {
 
     final paintEverything = (PaintingContext context, Offset offset) {
       paintContent(context, offset);
-      context.canvas.saveLayer(offset & size, Paint()..blendMode=BlendMode.dstIn);
+      context.canvas
+          .saveLayer(offset & size, Paint()..blendMode = BlendMode.dstIn);
       paintMask(context, offset);
       context.canvas.restore();
     };
@@ -86,7 +85,7 @@ class WidgetMask extends Stack {
     renderObject
       ..alignment = alignment
       ..textDirection = textDirection ?? Directionality.of(context)
-      ..fit = fit
-      ..overflow = overflow;
+      ..fit = fit;
+    // ..overflow = overflow;
   }
 }
